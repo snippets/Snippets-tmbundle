@@ -13,7 +13,7 @@ if not code:
 
 url = "snippet:add?code=%s" % urllib.quote(code)
 
-author = os.environ.get('SNIPPET_AUTHOR_NAME')
+author = os.environ.get('SNIPPET_AUTHOR')
 if author:
     url += "&amp;author=%s" % urllib.quote(author)
 

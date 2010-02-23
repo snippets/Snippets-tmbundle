@@ -85,7 +85,7 @@ os.system(command)</string>
 	<key>input</key>
 	<string>selection</string>
 	<key>keyEquivalent</key>
-	<string>^~@s</string>
+	<string>@P</string>
 	<key>name</key>
 	<string>Create Snippet With Selection</string>
 	<key>output</key>

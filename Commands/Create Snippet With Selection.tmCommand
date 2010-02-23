@@ -6,20 +6,75 @@
 	<string>nop</string>
 	<key>command</key>
 	<string>#!/usr/bin/env python
-import os, urllib
-code = os.environ.get('TM_SELECTED_TEXT')
-if not code:
-    os.exit(0)
+# TextMate Snippets.tmbundle script for 'Create snippet with Selection'
+# Version 0.1 - 23 Feb, 2010
 
+import sys, os, urllib, os.path
+env = os.environ
+
+SCOPES = {
+"actionscript": lambda s: s.startswith('source.actionscript'),
+"apache-conf":  lambda s: s.startswith('source.apache-config'),
+"apple-script": lambda s: s.startswith('source.applescript'),
+"bash":         lambda s: s.startswith('source.shell'),
+"c":            lambda s: s.startswith('source.c'),
+"cpp":          lambda s: s.startswith('source.c++'),
+"css":          lambda s: s.startswith('source.css'),
+"erlang":       lambda s: s.startswith('source.erlang'),
+"java":         lambda s: s.startswith('source.java'),
+"java":         lambda s: s.startswith('source.java-props'),
+"javascript":   lambda s: s.startswith('source.js'),
+"lisp":         lambda s: s.startswith('source.lisp'),
+"lua":          lambda s: s.startswith('source.lua'),
+"objective-c":  lambda s: s.startswith('source.objc'),
+
+"python":       lambda s: s.startswith('source.python'),
+"php":          lambda s: s.startswith('source.php'),
+"perl":         lambda s: s.startswith('source.perl'),
+"ruby":         lambda s: s.startswith('source.ruby'),
+"regexp":       lambda s: s.startswith('source.regexp'),
+"sql":          lambda s: s.startswith('source.sql'),
+"xslt":         lambda s: s.startswith('text.xml.xsl'),
+"xml":          lambda s: s.startswith('text.xml'),
+"vb":           lambda s: s.startswith('source.asp.vb'),
+
+"cold-fusion":  lambda s: s.startswith('text.html.cfm'),
+"html":         lambda s: s.startswith('text.html'),
+"html":         lambda s: s.startswith('source.smarty'),
+}
+
+code = env.get('TM_SELECTED_TEXT', env.get('TM_CURRENT_LINE','')).strip()
+if not code:
+sys.exit(0)
+
+# BASE URL with code
 url = "snippet:add?code=%s" % urllib.quote(code)
 
-author = os.environ.get('SNIPPET_AUTHOR')
+# AUTHOR
+author = env.get('SNIPPET_AUTHOR')
 if author:
-    url += "&amp;author=%s" % urllib.quote(author)
+url += "&amp;author=%s" % urllib.quote(author)
 
-license = os.environ.get('SNIPPET_LICENSE')
+# LICENSE
+license = env.get('SNIPPET_LICENSE')
 if license:
-    url += "&amp;license=%s" % urllib.quote(license)
+url += "&amp;license=%s" % urllib.quote(license)
+
+# RELATED URL
+directory = env.get('TM_DIRECTORY')
+filename = env.get('TM_FILENAME')
+if directory and filename:
+related_url = os.path.join(directory, filename)
+url += "&amp;relatedurl=%s" % urllib.quote("file://%s" % related_url)
+
+# HIGHLIGHT
+scope = env.get('TM_SCOPE')
+highlight = None
+for hl, func in SCOPES.items():
+if func(scope):
+    highlight = hl
+if highlight:
+url += "&amp;highlight=%s" % highlight
 
 command = "open '%s'" % (url,)
 os.system(command)</string>
